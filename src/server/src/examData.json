@@ -1,0 +1,16 @@
+{
+  "exams": [
+    {
+      "id": "1002",
+      "name": "Tentti2",
+      "maxScore": 100,
+      "questions": []
+    },
+    {
+      "id": "1003",
+      "name": "Tenttunen",
+      "maxScore": "499",
+      "questions": []
+    }
+  ]
+}
