@@ -1,21 +1,15 @@
 import express, { Router, Request, Response } from "express";
-import {readMockData, writeMockData} from "../index"
+import { readMockData, writeMockData } from "../index";
 
 interface Exam {
-  id: string,
-  name: string,
-  maxScore: number,
-  questions: [],
+  id: string;
+  name: string;
+  maxScore: number;
+  questions: [];
 }
 
 const router: Router = express.Router();
 
-//Mock data:
-/* let exams = [
-  { id: "1001", name: "Tentti1", maxScore: 100, questions: [] },
-  { id: "1002", name: "Tentti2", maxScore: 100, questions: [] },
-];
- */
 router.get("/", (req: Request, res: Response) => {
   try {
     const { exams } = readMockData();
@@ -26,27 +20,12 @@ router.get("/", (req: Request, res: Response) => {
   }
 });
 
-/* router.get("/:id", (req: Request, res: Response) => {
-  try {
-    const examId = req.params.id;
-    const examById = exams.find((exam) => exam.id === examId);
-    if (examById) {
-      res.json({message: `Exam with id ${examId}:`, data: examById});
-    } else {
-      res.status(404).json({ error: `Exam with id ${examId} not found` });
-    }
-  } catch (error) {
-    console.error("Error fetching exam by ID:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}); */
-
 router.post("/", (req: Request, res: Response) => {
   try {
-    const {exams} = readMockData();
+    const { exams } = readMockData();
     const newExam: Exam = req.body;
     exams.push(newExam);
-    writeMockData({exams})
+    writeMockData({ exams });
     res.json(newExam);
   } catch (error) {
     console.error("Error creating exam:", error);
@@ -54,12 +33,37 @@ router.post("/", (req: Request, res: Response) => {
   }
 });
 
+router.put("/:id", (req: Request, res: Response) => {
+  try {
+    const { exams } = readMockData();
+    const examId = req.params.id;
+    const updatedExamData: Exam[] = exams.map((exam: Exam) => {
+      if (exam.id === examId) {
+        return {
+          ...exam,
+          name: req.body.name || exam.name,
+          maxScore: req.body.maxScore || exam.maxScore,
+        };
+      }
+      return exam;
+    });
+
+    // Update the mockData
+    writeMockData({ exams: updatedExamData });
+
+    res.json({ message: "Exam updated successfully" });
+  } catch (error) {
+    console.error("Error updating exam: ", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
 router.delete("/:id", (req: Request, res: Response) => {
   try {
-    let {exams} = readMockData();
+    let { exams } = readMockData();
     const examId = req.params.id;
-    exams = exams.filter((exam : Exam) => exam.id !== examId);
-    writeMockData({exams})
+    exams = exams.filter((exam: Exam) => exam.id !== examId);
+    writeMockData({ exams });
     res.json({ message: "Exam deleted successfully" });
   } catch (error) {
     console.error("Error deleting exam:", error);

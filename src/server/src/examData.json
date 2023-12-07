@@ -1,16 +1,38 @@
 {
   "exams": [
     {
-      "id": "1002",
-      "name": "Tentti2",
-      "maxScore": 100,
-      "questions": []
+      "id": "22628729-422e-47ec-95c2-af3dd07909f4",
+      "isCompleted": false,
+      "name": "Moi",
+      "maxScore": 199,
+      "questions": [
+        {
+          "examId": "22628729-422e-47ec-95c2-af3dd07909f4",
+          "id": "d28e9007-16e1-421a-8dc7-042b4c3dceed",
+          "questionText": "Tallenna tää saatana",
+          "answerOptions": []
+        },
+        {
+          "examId": "22628729-422e-47ec-95c2-af3dd07909f4",
+          "id": "a0f9d7f7-925b-4ef0-958f-0f421f4fc04e",
+          "questionText": "Uusi kysymys",
+          "answerOptions": []
+        }
+      ]
     },
     {
-      "id": "1003",
-      "name": "Tenttunen",
-      "maxScore": "499",
-      "questions": []
+      "id": "e3b770b8-b2c9-4eec-b465-747a5056a108",
+      "isCompleted": false,
+      "name": "Overkill",
+      "maxScore": 100,
+      "questions": [
+        {
+          "examId": "e3b770b8-b2c9-4eec-b465-747a5056a108",
+          "id": "8f852cf9-0463-4dce-ad55-11c9e1b1ca0f",
+          "questionText": "Uusi kysymys",
+          "answerOptions": []
+        }
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/store';
-import { deleteExam } from '../features/exams/examsSlice';
+import { deleteExamById } from '../features/exams/examsSlice';
 import { Exam } from '../../types/types';
 
 interface ExamListItemProps {
@@ -11,12 +11,9 @@ const ExamListItem: React.FC<ExamListItemProps> = ({exam}) => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    const handleEditClick = () => {
-        navigate(`/exam/${exam.id}`)
-    };
-
-    const handleDeleteExam = () => {
-        dispatch(deleteExam(exam.id))
+    const handleDeleteExam = async () => {
+        await dispatch(deleteExamById(exam.id))
+        /* dispatch(deleteExam(exam.id)) */
     }
 
     return (
@@ -24,7 +21,7 @@ const ExamListItem: React.FC<ExamListItemProps> = ({exam}) => {
             <div>
                 <h3>{exam.name}</h3>
                 <p>Maksimipisteet: {exam.maxScore}</p>
-                <button onClick={handleEditClick}>Muokkaa tenttiä</button>
+                <button onClick={() => navigate(`/exam/${exam.id}`)}>Muokkaa tenttiä</button>
                 <button onClick={handleDeleteExam}>Poista tentti</button>
             </div>
         </li>

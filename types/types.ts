@@ -14,7 +14,7 @@ export interface Exam {
     id: string,
     maxScore: number,
     isCompleted: boolean,
-    name: string,
+    name: string,   
     questions: Question[],
 }
 

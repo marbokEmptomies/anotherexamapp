@@ -5,6 +5,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import examRoutes from './routes/examRoutes';
+import questionRoutes from "./routes/questionRoutes";
 
 dotenv.config();
 const app : Express = express();
@@ -19,8 +20,16 @@ const examDataPath = './examData.json';
 export const readMockData = () => {
     const filePath = path.join(__dirname, examDataPath);
     const rawData = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(rawData)
-}
+
+    try {
+        const parsedData = JSON.parse(rawData);
+        console.log("Parsed Data:", parsedData);
+        return parsedData;
+    } catch (error) {
+        console.error("Error parsing JSON:", error);
+        return undefined;
+    }
+};
 
 export const writeMockData = (data: any) => {
     const filePath = path.join(__dirname, examDataPath)
@@ -33,6 +42,7 @@ app.get('/', (req: Request, res: Response) => {
 
 //Routes
 app.use('/exams', examRoutes);
+app.use('/questions', questionRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)

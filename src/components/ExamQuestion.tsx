@@ -12,16 +12,16 @@ const ExamQuestion: React.FC<QuestionProps> = ({ examId, question }) => {
   const dispatch = useAppDispatch();
   const [editedQuestionText, setEditedQuestionText] = useState(question.questionText);
 
-  const handleSaveQuestion = () => {
+  const handleSaveQuestion = async () => {
     const editedQuestion: Question = {
       ...question,
       questionText: editedQuestionText,
     };
-    dispatch(updateQuestion({ examId, question: editedQuestion }));
+    await dispatch(updateQuestion({ examId, question: editedQuestion }));
   };
 
-  const handleDeleteQuestion = () => {
-    dispatch(deleteQuestion({ examId, questionId: question.id }));
+  const handleDeleteQuestion = async () => {
+    await dispatch(deleteQuestion({ examId, questionId:question.id }));
   };
 
   const handleAddAnswerOption = () => {
@@ -44,7 +44,7 @@ const ExamQuestion: React.FC<QuestionProps> = ({ examId, question }) => {
         onChange={(e) => setEditedQuestionText(e.target.value)}
       />
       </h3>
-      <button onClick={handleSaveQuestion}>Tallenna muutokset</button>
+      <button onClick={handleSaveQuestion}>Tallenna kysymys</button>
       <button onClick={handleDeleteQuestion}>Poista kysymys</button>
       <button onClick={handleAddAnswerOption}>Lisää vastausvaihtoehto</button>
     </div>
