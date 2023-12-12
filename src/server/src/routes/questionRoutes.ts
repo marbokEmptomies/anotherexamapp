@@ -1,87 +1,80 @@
 import express, { Router, Request, Response } from "express";
-import { readMockData, writeMockData } from "../index";
-import {Exam} from '../../../../types/types'
-
-interface Question {
-  id: string;
-  examId: string;
-  questionText: string;
-  answerOptions: [];
-}
+import db from "../db";
 
 const router: Router = express.Router();
 
-router.post("/", (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
     try {
-        const { examId, ...newQuestionData } = req.body;
-        let data = readMockData();
-        let exams = data.exams;
-        const examIndex = exams.findIndex((exam: any) => exam.id === examId);
+        const {examId, questionText} = req.body;
 
-        if (examIndex !== -1) {
-            const newQuestion = {examId, ...newQuestionData}
-            exams[examIndex].questions.push(newQuestion);
-            writeMockData(data); // Use the entire data object to update exams
-            res.json(newQuestionData);
-        } else {
-            res.status(404).json({ error: "Exam not found" });
+        //check if the exam exists
+        const examResult = await db.query(`SELECT * FROM exam WHERE id = $1`, [examId]);
+        const examExists = examResult.rows.length > 0;
+
+        if(!examExists){
+            return res.status(404).json({error: "Exam not found."})
         }
+        
+        //insert the question into the "question" table
+        await db.query(`INSERT INTO question (exam_id, question_text) VALUES ($1, $2)`, [examId, questionText]);
+
+        res.status(200).json({message: "Question added successfully"})
     } catch (error) {
         console.error("Error creating question: ", error);
         res.status(500).json({ error: "Internal server error." });
     }
 });
 
-router.put("/:id", (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
     try {
-        const { examId, ...updatedQuestionData } = req.body;
-        let data = readMockData();
-        const exams = data.exams;
-        const examIndex = exams.findIndex((exam: any) => exam.id === examId);
+        const questionId = req.params.id;
+        const {examId, questionText} = req.body;
+        
+        //check if the question exists
+        const questionResult = await db.query(`SELECT * FROM question WHERE id = $1`, [questionId]);
+        const questionExists = questionResult.rows.length > 0;
 
-        if (examIndex !== -1) {
-            const questions = exams[examIndex].questions;
-            const questionIndex = questions.findIndex((question: any) => question.id === req.params.id);
+        if(!questionExists){
+            return res.status(404).json({error: "Question not found"})
+        };
 
-            if (questionIndex !== -1) {
-                exams[examIndex].questions[questionIndex] = { examId: examId, id: req.params.id, ...updatedQuestionData };
-                writeMockData(data); // Use the entire data object to update exams
-                res.json({ examId: examId, id: req.params.id, ...updatedQuestionData });
-            } else {
-                res.status(404).json({ error: "Question not found" });
-            }
-        } else {
-            res.status(404).json({ error: "Exam not found" });
-        }
+        //update the question in the "question" table
+        await db.query(`UPDATE question SET exam_id = $1, question_text = $2 WHERE id = $3`, [examId, questionText, questionId]);
+
+        res.status(200).json({message: "Question updated successfully!"});
     } catch (error) {
         console.error("Error updating a question: ", error);
         res.status(500).json({ error: "Internal server error." });
     }
 });
 
-router.delete("/:examId/:questionId", (req: Request, res: Response) => {
+router.delete("/:id", async (req: Request, res: Response) => {
     try {
-        let { exams } = readMockData();
-        const examId = req.params.examId;
-        const questionId = req.params.questionId;
+        const questionId = req.params.id;
 
-        const examIndex = exams.findIndex((exam: Exam) => exam.id === examId);
+        //begin transaction
+        await db.query('BEGIN');
 
-        if (examIndex !== -1) {
-            const questions = exams[examIndex].questions;
-            const questionIndex = questions.findIndex((question: Question) => question.id === questionId);
+        //delete answer options
+        await db.query(`DELETE FROM answer_option WHERE question_id = $1`, [questionId]);
 
-            if (questionIndex !== -1) {
-                exams[examIndex].questions.splice(questionIndex, 1);
-                writeMockData({ exams });
-                res.json({ message: "Question deleted successfully" });
-            } else {
-                res.status(404).json({ error: "Question not found" });
-            }
-        } else {
-            res.status(404).json({ error: "Exam not found" });
-        }
+        //delete question
+        const deleteQuestionQuery = `DELETE FROM question WHERE id = $1 RETURNING *`
+        const deletedQuestion = await db.query(deleteQuestionQuery, [questionId])
+
+        //commit the transaction
+        await db.query('COMMIT')
+
+        //check if the question exists
+        if(deletedQuestion.rows.length === 0){
+            res.status(404).json({error: "Question not found"});
+          }else {
+            res.status(200).json({message: "Question and associated data successfully deleted", data: deletedQuestion.rows[0]})
+          }
+
     } catch (error) {
+        //rollback in case on an error
+        await db.query('ROLLBACK')
         console.error("Error deleting question:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
