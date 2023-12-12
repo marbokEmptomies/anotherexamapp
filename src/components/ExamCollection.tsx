@@ -32,7 +32,6 @@ const ExamCollection: React.FC = () => {
                 <p>Ei tenttejä</p>
             ) : (
                 <div>
-                    <h1>Kaikki tentit</h1>
                     {status === 'loading' && <p>Ladataan tenttejä...</p>}
                     {status === 'failed' && <p>Virhe: {error}</p>}
                     {status === 'succeeded' &&
@@ -42,7 +41,8 @@ const ExamCollection: React.FC = () => {
                             ))}
                         </ul>
                     }
-                </div>)}
+                </div>
+            )}
         </div>
     )
 }

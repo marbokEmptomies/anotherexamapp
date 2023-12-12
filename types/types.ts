@@ -31,3 +31,11 @@ export interface AnswerOption {
     answerOptionText: string,
     isCorrect: boolean,
 }
+
+export interface User {
+    id: string,
+    username: string,
+    password: string,
+    email: string,
+    role: 'admin' | 'user'
+}

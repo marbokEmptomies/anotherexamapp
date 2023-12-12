@@ -7,8 +7,8 @@ import {
 } from "../../services/examsApi";
 import {
   createQuestion as createQuestionApi,
-  deleteQuestion as deleteQuestionApi,
-  updateQuestion as updateQuestionApi,
+  /* deleteQuestion as deleteQuestionApi,
+  updateQuestion as updateQuestionApi, */
 } from "../../services/questionApi";
 import { RootState } from "../../store/rootReducer";
 import { ExamState, Exam, Question, AnswerOption } from "../../../types/types";
@@ -55,7 +55,7 @@ export const createQuestion = createAsyncThunk(
   }
 );
 
-export const updateQuestion = createAsyncThunk(
+/* export const updateQuestion = createAsyncThunk(
   "/questions/updateQuestion",
   async ({ examId, question }: { examId: string; question: Question }) => {
     const response = await updateQuestionApi(question);
@@ -69,7 +69,7 @@ export const deleteQuestion = createAsyncThunk(
     await deleteQuestionApi(examId, questionId);
     return { examId, questionId };
   }
-);
+); */
 
 const examsSlice = createSlice({
   name: "exams",
@@ -87,7 +87,7 @@ const examsSlice = createSlice({
         console.error("Error adding a question!");
       }
     }, */
-    /* updateQuestion: (
+    updateQuestion: (
       state,
       action: PayloadAction<{ examId: string; question: Question }>
     ) => {
@@ -101,8 +101,8 @@ const examsSlice = createSlice({
           Object.assign(existingQuestion, question);
         }
       }
-    }, */
-    /* deleteQuestion: (
+    }, 
+     deleteQuestion: (
       state,
       action: PayloadAction<{ examId: string; questionId: string }>
     ) => {
@@ -113,7 +113,7 @@ const examsSlice = createSlice({
           (question) => question.id !== questionId
         );
       }
-    }, */
+    },
     addAnswerOption: (
       state,
       action: PayloadAction<{
@@ -244,7 +244,7 @@ const examsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || null;
       })
-      .addCase(updateQuestion.fulfilled, (state, action) => {
+      /* .addCase(updateQuestion.fulfilled, (state, action) => {
         const { examId, question } = action.payload;
         const exam = state.exams.find((exam) => exam.id === examId);
         if (exam) {
@@ -272,18 +272,20 @@ const examsSlice = createSlice({
           );
         }
         state.status = "succeeded";
-      })
-      .addCase(deleteQuestion.pending, (state) => {
+      }) */
+      /* .addCase(deleteQuestion.pending, (state) => {
         state.status = "loading";
       })
       .addCase(deleteQuestion.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
-      })
+      }) */
   },
 });
 
 export const {
+  updateQuestion,
+  deleteQuestion,
   addAnswerOption,
   updateAnswerOption,
   deleteAnswerOption,
