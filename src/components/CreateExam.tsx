@@ -18,7 +18,6 @@ const CreateExam: React.FC = () => {
 
   // Exams
   const [examName, setExamName] = useState('');
-  const [maxScore, setMaxScore] = useState<number | null>(null);
   const [selectedExam, setSelectedExam] = useState<string | null>(id || null);
 
   // Questions
@@ -30,7 +29,6 @@ const CreateExam: React.FC = () => {
     // Set initial values when editing an existing exam
     if (selectedExamData) {
       setExamName(selectedExamData.name || '');
-      setMaxScore(selectedExamData.maxScore || null);
     }
   }, [selectedExamData]);
 
@@ -40,7 +38,6 @@ const CreateExam: React.FC = () => {
         isCompleted: false,
         id: selectedExam,
         name: examName,
-        maxScore: maxScore ?? 0,
         questions: [...questions],
       };
       
@@ -48,12 +45,11 @@ const CreateExam: React.FC = () => {
       console.log('Updated exam: ', updatedExam);
       navigate(`/exams`);
     } else {
-      if (maxScore !== null && examName && examName.trim() !== "") {
+      if (examName && examName.trim() !== "") {
         const newExam: Exam = {
           id: uuid(),
           isCompleted: false,
           name: examName,
-          maxScore: maxScore ?? 0,
           questions: [...questions],
         };
 
@@ -87,15 +83,6 @@ const CreateExam: React.FC = () => {
       <label>
         Tentin nimi:
         <input type="text" value={examName} onChange={(e) => setExamName(e.target.value)} />
-      </label>
-      <br />
-      <label>
-        Maksimipisteet:
-        <input
-          type="number"
-          value={maxScore ?? ''}
-          onChange={(e) => setMaxScore(e.target.value !== '' ? Number(e.target.value) : null)}
-        />
       </label>
       <br />
       <h2>Kysymykset</h2>

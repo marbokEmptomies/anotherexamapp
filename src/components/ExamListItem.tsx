@@ -20,7 +20,6 @@ const ExamListItem: React.FC<ExamListItemProps> = ({exam}) => {
         <li>
             <div>
                 <h3>{exam.name}</h3>
-                <p>Maksimipisteet: {exam.maxScore}</p>
                 <button onClick={() => navigate(`/exam/${exam.id}`)}>Muokkaa tenttiä</button>
                 <button onClick={handleDeleteExam}>Poista tentti</button>
             </div>
