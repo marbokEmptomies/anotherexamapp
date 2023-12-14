@@ -12,7 +12,6 @@ export interface ExamState {
 
 export interface Exam {
     id: string,
-    maxScore: number,
     isCompleted: boolean,
     name: string,   
     questions: Question[],
@@ -33,9 +32,9 @@ export interface AnswerOption {
 }
 
 export interface User {
-    id: string,
-    username: string,
-    password: string,
+    firstName: string,
+    lastName: string,
     email: string,
+    password: string,
     role: 'admin' | 'user'
 }

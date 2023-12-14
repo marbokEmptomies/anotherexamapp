@@ -1,21 +1,32 @@
-import axios from 'axios';
+import axios from "axios";
+import { User } from "../server/types/types";
 
-const API_BASE_URL = 'http://your-api-base-url';
+const API_BASE_URL = "https://localhost:1337/users";
 
-export const login = async (username: string, password: string) => {
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+export const registerUser = async (user: User) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, { username, password });
+    const response = await api.post("/register", user);
     return response.data;
-  } catch (error:any) {
-    throw error.response?.data || error.message;
+  } catch (error) {
+    console.error("Error registering user: ", error);
+    throw error;
   }
 };
 
-export const register = async (user: { username: string; password: string; email: string }) => {
+export const loginUser = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/register`, user);
-    return response.data;
-  } catch (error:any) {
-    throw error.response?.data || error.message;
+    const response = await api.post("/login", { email, password });
+    console.log("login response: ", response)
+    return response;
+  } catch (error) {
+    console.error("Error in login: ", error);
+    throw error;
   }
 };
