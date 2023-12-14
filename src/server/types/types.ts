@@ -12,7 +12,6 @@ export interface ExamState {
 
 export interface Exam {
     id: string,
-    isCompleted: boolean,
     name: string,   
     questions: Question[],
 }

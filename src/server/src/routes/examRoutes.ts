@@ -10,37 +10,44 @@ router.get("/", async (req: Request, res: Response) => {
       `SELECT 
       e.id AS exam_id, 
       e.name, 
-      (
-        SELECT 
-          JSON_AGG(
-            JSON_BUILD_OBJECT(
-              'question_id', q.id, 
-              'question_text', q.question_text, 
-              'answer_options', (
-                SELECT 
-                  JSON_AGG(
-                    JSON_BUILD_OBJECT(
-                      'answer_option_id', ao.id, 
-                      'answer_text', ao.answer_text, 
-                      'is_correct', ao.is_correct
-                    )
-                  ) 
-                FROM 
-                  answer_option ao 
-                WHERE 
-                  ao.question_id = q.id
+      COALESCE(
+        (
+          SELECT 
+            JSON_AGG(
+              JSON_BUILD_OBJECT(
+                'question_id', q.id, 
+                'question_text', q.question_text, 
+                'answer_options', COALESCE(
+                  (
+                    SELECT 
+                      JSON_AGG(
+                        JSON_BUILD_OBJECT(
+                          'answer_option_id', ao.id, 
+                          'answer_text', ao.answer_text, 
+                          'is_correct', ao.is_correct
+                        )
+                      )::jsonb
+                    FROM 
+                      answer_option ao 
+                    WHERE 
+                      ao.question_id = q.id
+                  ),
+                  '[]'::jsonb
+                )::jsonb
               )
-            )
-          ) 
-        FROM 
-          question q 
-        WHERE 
-          q.exam_id = e.id
-      ) AS questions
+            )::json -- Explicitly cast to json
+          FROM 
+            question q 
+          WHERE 
+            q.exam_id = e.id
+        ),
+        '[]'::json -- Replace NULL with an empty array
+      )::json AS questions
     FROM 
       exam e
     ORDER BY 
-      e.id`
+      e.id;    
+    `
 
       /* SELECT 
         e.id AS exam_id, 
@@ -81,7 +88,7 @@ router.post("/", async (req: Request, res: Response) => {
       .status(200)
       .json({
         message: "Exam created successfully!",
-        data: insertedExam.rows[0],
+        data: insertedExam.rows[0]
       });
   } catch (error) {
     console.error("Error creating exam:", error);

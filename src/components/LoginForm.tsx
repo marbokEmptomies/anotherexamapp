@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../store/store';
-import { loginUserAsync, clearUserState } from '../features/users/userSlice';
+import { loginUserAsync } from '../features/users/userSlice';
 import { RootState } from "../store/rootReducer";
 import { useNavigate } from 'react-router-dom';
 
@@ -31,14 +31,6 @@ const LoginForm: React.FC = () => {
         console.error("Error logging in: ", error)
     }
   };
-
-  // Clear user state when the component unmounts
-  /* useEffect(() => {
-    return () => {
-      dispatch(clearUserState());
-    };
-  }, [dispatch]); */
-
 
   return (
     <form onSubmit={handleSubmit}>

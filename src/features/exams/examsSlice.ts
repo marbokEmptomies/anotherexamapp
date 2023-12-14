@@ -191,6 +191,7 @@ const examsSlice = createSlice({
       })
       .addCase(postExam.fulfilled, (state, action) => {
         state.exams.push(action.payload);
+        console.log("create exam: ", action.payload)
         state.status = "succeeded";
       })
       .addCase(postExam.pending, (state) => {
