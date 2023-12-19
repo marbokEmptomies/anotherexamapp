@@ -6,7 +6,6 @@ function Home() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const isToken = localStorage.getItem('token')
-  console.log("token: ", isToken)
 
   const handleLogout = () => {
     dispatch(clearUserState());
@@ -17,16 +16,13 @@ function Home() {
     if (isToken !== null) {
       return (
         <>
-          <button onClick={() => navigate(`/create-exam`)}>Luo uusi tentti</button>
-          <button onClick={() => navigate(`/exams`)}>Kaikki tentit</button>
-          <button onClick={handleLogout}>Kirjaudu ulos</button>
+          <h1>Tervetuloa!</h1>
         </>
       );
     } else {
       return (
         <>
-          <button onClick={() => navigate(`/register`)}>Rekisteröidy</button>
-          <button onClick={() => navigate(`/login`)}>Kirjaudu sisään</button>
+          <h2>Kirjaudu sisään tai rekisteröidy</h2>
         </>
       );
     }

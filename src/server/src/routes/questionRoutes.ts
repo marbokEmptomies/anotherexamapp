@@ -16,9 +16,9 @@ router.post("/", async (req: Request, res: Response) => {
         }
         
         //insert the question into the "question" table
-        await db.query(`INSERT INTO question (exam_id, question_text) VALUES ($1, $2)`, [examId, questionText]);
+        const data = await db.query(`INSERT INTO question (exam_id, question_text) VALUES ($1, $2) RETURNING *`, [examId, questionText]);
 
-        res.status(200).json({message: "Question added successfully"})
+        res.status(200).json({message: "Question added successfully", data: data.rows[0]})
     } catch (error) {
         console.error("Error creating question: ", error);
         res.status(500).json({ error: "Internal server error." });
@@ -28,7 +28,9 @@ router.post("/", async (req: Request, res: Response) => {
 router.put("/:id", async (req: Request, res: Response) => {
     try {
         const questionId = req.params.id;
-        const {examId, questionText} = req.body;
+        const {questionText} = req.body;
+
+        console.log("UpdateQ body: ", req.body)
         
         //check if the question exists
         const questionResult = await db.query(`SELECT * FROM question WHERE id = $1`, [questionId]);
@@ -39,9 +41,9 @@ router.put("/:id", async (req: Request, res: Response) => {
         };
 
         //update the question in the "question" table
-        await db.query(`UPDATE question SET exam_id = $1, question_text = $2 WHERE id = $3`, [examId, questionText, questionId]);
+        const data = await db.query(`UPDATE question SET question_text = $1 WHERE id = $2 RETURNING *`, [questionText, questionId]);
 
-        res.status(200).json({message: "Question updated successfully!"});
+        res.status(200).json({message: "Question updated successfully!", data: data});
     } catch (error) {
         console.error("Error updating a question: ", error);
         res.status(500).json({ error: "Internal server error." });

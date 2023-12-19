@@ -7,11 +7,10 @@ import {
 } from "../../services/examsApi";
 import {
   createQuestion as createQuestionApi,
-  /* deleteQuestion as deleteQuestionApi,
-  updateQuestion as updateQuestionApi, */
+  updateQuestion as updateQuestionApi,
 } from "../../services/questionApi";
 import { RootState } from "../../store/rootReducer";
-import { ExamState, Exam, Question, AnswerOption } from "../../../types/types";
+import { ExamState, Exam, Question, AnswerOption } from "../../server/types/types";
 
 const initialState: ExamState = {
   exams: [],
@@ -40,7 +39,7 @@ export const updateExamById = createAsyncThunk(
 
 export const deleteExamById = createAsyncThunk(
   "/exams/deleteExamById",
-  async (examId: string) => {
+  async (examId: number) => {
     await deleteExam(examId);
     return examId;
   }
@@ -49,50 +48,37 @@ export const deleteExamById = createAsyncThunk(
 //QUESTIONS:
 export const createQuestion = createAsyncThunk(
   "/questions/createQuestion",
-  async ({ examId, question }: { examId: string; question: Question }) => {
-    const response = await createQuestionApi(question);
-    return { examId, question: response };
+  async ({ examId, questionText }: { examId: number; questionText: string }) => {
+    console.log("createExam: ", examId, questionText)
+    const response = await createQuestionApi({examId, questionText});
+    return response;
   }
 );
 
-/* export const updateQuestion = createAsyncThunk(
-  "/questions/updateQuestion",
-  async ({ examId, question }: { examId: string; question: Question }) => {
-    const response = await updateQuestionApi(question);
-    return { examId, question: response };
-  }
-);
+export const updateQuestion = createAsyncThunk("/questions/updateQuestion", 
+  async (updatedQuestion:Question) => {
+    console.log("updatedQuestion thunk: ", updatedQuestion)
+    await updateQuestionApi(updatedQuestion)
+    return updatedQuestion
+})
 
-export const deleteQuestion = createAsyncThunk(
-  "/questions/deleteQuestion",
-  async ({ examId, questionId }: { examId: string; questionId: string }) => {
-    await deleteQuestionApi(examId, questionId);
-    return { examId, questionId };
-  }
-); */
+export const deleteQuestionById = createAsyncThunk(
+  "/exams/deleteExamById",
+  async ({examId: number,questionId: number}) => {
+    await deleteQuestion(questionId);
+    return questionId;
+  });
 
 const examsSlice = createSlice({
   name: "exams",
   initialState,
   reducers: {
-    /* addQuestion: (
+    /* updateQuestion: (
       state,
-      action: PayloadAction<{ examId: string; question: Question }>
+      action: PayloadAction<{ examId: number; question: Question }>
     ) => {
       const { examId, question } = action.payload;
-      const exam = state.exams.find((exam) => exam.id === examId);
-      if (exam) {
-        exam.questions.push(question);
-      } else {
-        console.error("Error adding a question!");
-      }
-    }, */
-    updateQuestion: (
-      state,
-      action: PayloadAction<{ examId: string; question: Question }>
-    ) => {
-      const { examId, question } = action.payload;
-      const exam = state.exams.find((exam) => exam.id === examId);
+      const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
         const existingQuestion = exam.questions.find(
           (q) => q.id === question.id
@@ -101,53 +87,53 @@ const examsSlice = createSlice({
           Object.assign(existingQuestion, question);
         }
       }
-    }, 
+    },  */
      deleteQuestion: (
       state,
-      action: PayloadAction<{ examId: string; questionId: string }>
+      action: PayloadAction<{ examId: number; questionId: number }>
     ) => {
       const { examId, questionId } = action.payload;
-      const exam = state.exams.find((exam) => exam.id === examId);
+      const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
         exam.questions = exam.questions.filter(
-          (question) => question.id !== questionId
+          (question) => question.question_id !== questionId
         );
       }
     },
     addAnswerOption: (
       state,
       action: PayloadAction<{
-        examId: string;
-        questionId: string;
+        examId: number;
+        questionId: number;
         answerOption: AnswerOption;
       }>
     ) => {
       const { examId, questionId, answerOption } = action.payload;
-      const exam = state.exams.find((exam) => exam.id === examId);
+      const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
         const question = exam.questions.find(
-          (question) => question.id === questionId
+          (question) => question.question_id === questionId
         );
         if (question) {
-          question.answerOptions.push(answerOption);
+          question.answer_options.push(answerOption);
         }
       }
     },
     updateAnswerOption: (
       state,
       action: PayloadAction<{
-        examId: string;
-        questionId: string;
-        answerOptionId: string;
+        examId: number;
+        questionId: number;
+        answerOptionId: number;
         updates: Partial<AnswerOption>;
       }>
     ) => {
       const { examId, questionId, answerOptionId, updates } = action.payload;
-      const exam = state.exams.find((exam) => exam.id === examId);
+      const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
-        const question = exam.questions.find((q) => q.id === questionId);
+        const question = exam.questions.find((q) => q.question_id === questionId);
         if (question) {
-          const answerOption = question.answerOptions.find(
+          const answerOption = question.answer_options.find(
             (aOption) => aOption.id === answerOptionId
           );
           if (answerOption) {
@@ -159,17 +145,17 @@ const examsSlice = createSlice({
     deleteAnswerOption: (
       state,
       action: PayloadAction<{
-        examId: string;
-        questionId: string;
-        answerOptionId: string;
+        examId: number;
+        questionId: number;
+        answerOptionId: number;
       }>
     ) => {
       const { examId, questionId, answerOptionId } = action.payload;
-      const exam = state.exams.find((exam) => exam.id === examId);
+      const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
-        const question = exam.questions.find((q) => q.id === questionId);
+        const question = exam.questions.find((q) => q.question_id === questionId);
         if (question) {
-          question.answerOptions = question.answerOptions.filter(
+          question.answer_options = question.answer_options.filter(
             (option) => option.id !== answerOptionId
           );
         }
@@ -180,6 +166,7 @@ const examsSlice = createSlice({
     builder
       .addCase(fetchExams.fulfilled, (state, action) => {
         state.exams = action.payload;
+        console.log("exams fetched: ", state.exams)
         state.status = "succeeded";
       })
       .addCase(fetchExams.pending, (state) => {
@@ -202,7 +189,7 @@ const examsSlice = createSlice({
         state.error = action.error.message || null;
       })
       .addCase(deleteExamById.fulfilled, (state, action) => {
-        state.exams = state.exams.filter((exam) => exam.id !== action.payload);
+        state.exams = state.exams.filter((exam) => exam.exam_id !== action.payload);
         state.status = "succeeded";
       })
       .addCase(deleteExamById.pending, (state) => {
@@ -215,7 +202,7 @@ const examsSlice = createSlice({
       .addCase(updateExamById.fulfilled, (state, action) => {
         const updatedExam = action.payload;
         const index = state.exams.findIndex(
-          (exam) => exam.id === updatedExam.id
+          (exam) => exam.exam_id === updatedExam.exam_id
         );
 
         if (index !== -1) {
@@ -231,13 +218,14 @@ const examsSlice = createSlice({
         state.error = action.error.message || null;
       })
       .addCase(createQuestion.fulfilled, (state, action) => {
-        const { examId, question } = action.payload;
-        const exam = state.exams.find((exam) => exam.id === examId);
+        const examId = action.payload.exam_id
+        const newQuestion = action.payload
+        const exam = state.exams.find((exam) => exam.exam_id === examId);
         if (exam) {
-          exam.questions.push(question);
-        }
+          exam.questions.push(newQuestion)
+        } 
         state.status = "succeeded";
-      })
+      })      
       .addCase(createQuestion.pending, (state) => {
         state.status = "loading";
       })
@@ -245,17 +233,21 @@ const examsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || null;
       })
-      /* .addCase(updateQuestion.fulfilled, (state, action) => {
-        const { examId, question } = action.payload;
-        const exam = state.exams.find((exam) => exam.id === examId);
+      .addCase(updateQuestion.fulfilled, (state, action) => {
+        const exam = state.exams.find((exam) => exam.exam_id === action.payload.exam_id);
+  
         if (exam) {
           const existingQuestion = exam.questions.find(
-            (q) => q.id === question.id
+            (question) => question.question_id === action.payload.question_id
           );
+  
           if (existingQuestion) {
-            Object.assign(existingQuestion, question);
+            // Update the existing question in the state with the new data
+            Object.assign(existingQuestion, action.payload);
           }
         }
+  
+        state.status = 'succeeded';
       })
       .addCase(updateQuestion.pending, (state) => {
         state.status = "loading";
@@ -264,28 +256,10 @@ const examsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || null;
       })
-      .addCase(deleteQuestion.fulfilled, (state, action) => {
-        const { examId, questionId } = action.payload;
-        const exam = state.exams.find((exam) => exam.id === examId);
-        if (exam) {
-          exam.questions = exam.questions.filter(
-            (question) => question.id !== questionId
-          );
-        }
-        state.status = "succeeded";
-      }) */
-      /* .addCase(deleteQuestion.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(deleteQuestion.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message || null;
-      }) */
   },
 });
 
 export const {
-  updateQuestion,
   deleteQuestion,
   addAnswerOption,
   updateAnswerOption,

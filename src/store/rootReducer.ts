@@ -1,5 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
-export * from "../../types/types"
+export * from "../server/types/types"
 import examsReducer from "../features/exams/examsSlice";
 import userReducer from '../features/users/userSlice';
 

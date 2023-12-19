@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {Exam} from "../../types/types";
+import {Exam} from "../server/types/types";
 
 const API_BASE_URL = "https://localhost:1337";
 
@@ -30,7 +30,7 @@ export const createExam = async (newExam: Exam): Promise<Exam> => {
 
 export const updateExam = async (updatedExam: Exam): Promise<Exam> => {
     try {
-        const response = await api.put(`/exams/${updatedExam.id}`, updatedExam);
+        const response = await api.put(`/exams/${updatedExam.exam_id}`, updatedExam);
         return response.data;
     } catch (error) {
         console.error("Error updating exam", error);
@@ -38,7 +38,7 @@ export const updateExam = async (updatedExam: Exam): Promise<Exam> => {
     }
 }
 
-export const deleteExam = async (examId: string): Promise<string> => {
+export const deleteExam = async (examId: number): Promise<number> => {
     try {
         const response = await api.delete(`/exams/${examId}`)
         return response.data

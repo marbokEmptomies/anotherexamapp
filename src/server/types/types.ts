@@ -11,23 +11,22 @@ export interface ExamState {
 }
 
 export interface Exam {
-    id: string,
+    exam_id: number | null,
     name: string,   
     questions: Question[],
 }
 
 export interface Question {
-    examId: string,
-    id: string,
-    questionText: string,
-    answerOptions: AnswerOption[];
+    exam_id: number | null,
+    question_id: number | null,
+    question_text: string,
+    answer_options: AnswerOption[];
 }
 
 export interface AnswerOption {
-    questionId: string,
-    id: string,
-    answerOptionText: string,
-    isCorrect: boolean,
+    id: number| null,
+    answer_text: string,
+    is_correct: boolean,
 }
 
 export interface User {

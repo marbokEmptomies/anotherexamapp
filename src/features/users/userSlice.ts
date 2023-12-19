@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { registerUser, loginUser } from '../../services/authServices';
-import { User } from '../../../types/types';
+import { User } from '../../server/types/types';
 
 interface UserState {
   user: User | null;
@@ -60,7 +60,6 @@ const userSlice = createSlice({
       .addCase(loginUserAsync.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.token = action.payload.token;
-        console.log("TOKEN in slice: ", state.token)
 
         localStorage.setItem('token', state.token as string)
       })
