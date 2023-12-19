@@ -62,12 +62,12 @@ export const updateQuestion = createAsyncThunk("/questions/updateQuestion",
     return updatedQuestion
 })
 
-export const deleteQuestionById = createAsyncThunk(
+/* export const deleteQuestionById = createAsyncThunk(
   "/exams/deleteExamById",
   async ({examId: number,questionId: number}) => {
     await deleteQuestion(questionId);
     return questionId;
-  });
+  }); */
 
 const examsSlice = createSlice({
   name: "exams",
