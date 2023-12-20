@@ -43,7 +43,7 @@ export const deleteExam = async (examId: number): Promise<number> => {
         const response = await api.delete(`/exams/${examId}`)
         return response.data
     } catch (error) {
-        console.error("Error deletin exam ", error)
+        console.error("Error deleting exam ", error)
         throw error;
     }
 }

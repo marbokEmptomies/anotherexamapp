@@ -30,9 +30,10 @@ export const updateQuestion = async (updatedQuestion: Question): Promise<Questio
     }
 }
 
-export const deleteQuestion = async (examId: string, questionId: string): Promise<string> => {
+export const deleteQuestion = async (id: number): Promise<number> => {
+    console.log("DELQ id: ", id)
     try {
-        const response = await api.delete(`/questions/${examId}/${questionId}`);
+        const response = await api.delete(`/questions/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error deleting question: ", error);

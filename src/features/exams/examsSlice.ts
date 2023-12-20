@@ -8,6 +8,7 @@ import {
 import {
   createQuestion as createQuestionApi,
   updateQuestion as updateQuestionApi,
+  deleteQuestion as deleteQuestionApi,
 } from "../../services/questionApi";
 import { RootState } from "../../store/rootReducer";
 import { ExamState, Exam, Question, AnswerOption } from "../../server/types/types";
@@ -62,12 +63,13 @@ export const updateQuestion = createAsyncThunk("/questions/updateQuestion",
     return updatedQuestion
 })
 
-/* export const deleteQuestionById = createAsyncThunk(
-  "/exams/deleteExamById",
-  async ({examId: number,questionId: number}) => {
-    await deleteQuestion(questionId);
-    return questionId;
-  }); */
+export const deleteQuestion = createAsyncThunk(
+  "/questions/deleteQuestion",
+  async (id:number) => {
+    console.log("Del ID:", id)
+    await deleteQuestionApi(id);
+    return id;
+  });
 
 const examsSlice = createSlice({
   name: "exams",
@@ -88,7 +90,7 @@ const examsSlice = createSlice({
         }
       }
     },  */
-     deleteQuestion: (
+     /* deleteQuestion: (
       state,
       action: PayloadAction<{ examId: number; questionId: number }>
     ) => {
@@ -99,7 +101,7 @@ const examsSlice = createSlice({
           (question) => question.id !== questionId
         );
       }
-    },
+    }, */
     addAnswerOption: (
       state,
       action: PayloadAction<{
@@ -257,11 +259,25 @@ const examsSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message || null;
       })
+      .addCase(deleteQuestion.fulfilled, (state, action) => {
+        const questionToDelete = action.payload
+        for (const exam of state.exams) {
+          const updatedQuestions = exam.questions.filter((question) => question.id !== questionToDelete);
+          exam.questions = updatedQuestions;
+        }
+        state.status = "succeeded";
+      })
+      .addCase(deleteQuestion.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteQuestion.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
+      })
   },
 });
 
 export const {
-  deleteQuestion,
   addAnswerOption,
   updateAnswerOption,
   deleteAnswerOption,

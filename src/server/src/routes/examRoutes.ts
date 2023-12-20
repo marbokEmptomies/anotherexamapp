@@ -15,7 +15,7 @@ router.get("/", async (req: Request, res: Response) => {
           SELECT 
             JSON_AGG(
               JSON_BUILD_OBJECT(
-                'question_id', q.id, 
+                'id', q.id, 
                 'question_text', q.question_text, 
                 'answer_options', COALESCE(
                   (

@@ -87,6 +87,7 @@ interface ExamCardProps {
 }
 
 const ExamCard: React.FC<ExamCardProps> = ({ exam }) => {
+    console.log("ExamCard: ", exam)
   const dispatch = useAppDispatch();
 
   const [examName, setExamName] = useState(exam.name);
@@ -106,12 +107,12 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam }) => {
   };
 
   const handleUpdateQuestion = (question: Question) => {
-    console.log("handleUQ: ", question)
     dispatch(updateQuestion(question));
   };
 
-  const handleDeleteQuestion = (questionId: number) => {
-    dispatch(deleteQuestion({ examId: exam.exam_id as number, questionId }));
+  const handleDeleteQuestion = (id: number) => {
+    console.log("handleDELQ id:", id)
+    dispatch(deleteQuestion( id ));
   };
 
   return (
