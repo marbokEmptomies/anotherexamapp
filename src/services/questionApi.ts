@@ -20,9 +20,9 @@ export const createQuestion = async ({ examId, questionText }: { examId: number;
 
 export const updateQuestion = async (updatedQuestion: Question): Promise<Question> => {
     const newText = updatedQuestion.question_text
-    console.log("New text: ", newText)
+    console.log("UPDQ", updatedQuestion)
     try {
-        const response = await api.put(`/questions/${updatedQuestion.question_id}`, {questionText: newText});
+        const response = await api.put(`/questions/${updatedQuestion.id}`, {questionText: newText});
         return response.data;
     } catch (error) {
         console.error("Error updating question", error);

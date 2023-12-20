@@ -96,7 +96,7 @@ const examsSlice = createSlice({
       const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
         exam.questions = exam.questions.filter(
-          (question) => question.question_id !== questionId
+          (question) => question.id !== questionId
         );
       }
     },
@@ -112,7 +112,7 @@ const examsSlice = createSlice({
       const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
         const question = exam.questions.find(
-          (question) => question.question_id === questionId
+          (question) => question.id === questionId
         );
         if (question) {
           question.answer_options.push(answerOption);
@@ -131,7 +131,7 @@ const examsSlice = createSlice({
       const { examId, questionId, answerOptionId, updates } = action.payload;
       const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
-        const question = exam.questions.find((q) => q.question_id === questionId);
+        const question = exam.questions.find((q) => q.id === questionId);
         if (question) {
           const answerOption = question.answer_options.find(
             (aOption) => aOption.id === answerOptionId
@@ -153,7 +153,7 @@ const examsSlice = createSlice({
       const { examId, questionId, answerOptionId } = action.payload;
       const exam = state.exams.find((exam) => exam.exam_id === examId);
       if (exam) {
-        const question = exam.questions.find((q) => q.question_id === questionId);
+        const question = exam.questions.find((q) => q.id === questionId);
         if (question) {
           question.answer_options = question.answer_options.filter(
             (option) => option.id !== answerOptionId
@@ -220,6 +220,7 @@ const examsSlice = createSlice({
       .addCase(createQuestion.fulfilled, (state, action) => {
         const examId = action.payload.exam_id
         const newQuestion = action.payload
+        console.log("NewQ:", newQuestion)
         const exam = state.exams.find((exam) => exam.exam_id === examId);
         if (exam) {
           exam.questions.push(newQuestion)
@@ -238,7 +239,7 @@ const examsSlice = createSlice({
   
         if (exam) {
           const existingQuestion = exam.questions.find(
-            (question) => question.question_id === action.payload.question_id
+            (question) => question.id === action.payload.id
           );
   
           if (existingQuestion) {

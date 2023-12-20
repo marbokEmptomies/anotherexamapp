@@ -149,7 +149,7 @@ const ExamCard: React.FC<ExamCardProps> = ({ exam }) => {
               onUpdateQuestion={(updatedQuestion) =>
                 handleUpdateQuestion(updatedQuestion)
               }
-              onDeleteQuestion={() => handleDeleteQuestion(question.question_id as number)}
+              onDeleteQuestion={() => handleDeleteQuestion(question.id)}
             />
           ))}
           <Button color="inherit" onClick={handleAddQuestion}>
