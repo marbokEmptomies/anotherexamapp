@@ -1,23 +1,24 @@
 import express, { Router, Request, Response } from "express";
+import { Question } from "../../types/types";
 import db from "../db";
 
 const router: Router = express.Router();
 
 router.post("/", async (req: Request, res: Response) => {
     try {
-        const {examId, questionText} = req.body;
+        const newQuestion:Question= req.body;
+        console.log("NEW QUESTION ROUTE:", newQuestion)
 
         //check if the exam exists
-        const examResult = await db.query(`SELECT * FROM exam WHERE id = $1`, [examId]);
+        const examResult = await db.query(`SELECT * FROM exam WHERE id = $1`, [newQuestion.exam_id]);
         const examExists = examResult.rows.length > 0;
 
         if(!examExists){
             return res.status(404).json({error: "Exam not found."})
         }
-        
-        //insert the question into the "question" table
-        const data = await db.query(`INSERT INTO question (exam_id, question_text) VALUES ($1, $2) RETURNING *`, [examId, questionText]);
 
+        //insert the question into the "question" table
+        const data = await db.query(`INSERT INTO question (exam_id, question_text, answer_options) VALUES ($1, $2, $3) RETURNING *`, [newQuestion.exam_id, newQuestion.question_text, newQuestion.answer_options]);
         res.status(200).json({message: "Question added successfully", data: data.rows[0]})
     } catch (error) {
         console.error("Error creating question: ", error);

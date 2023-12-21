@@ -22,7 +22,7 @@ router.get("/", async (req: Request, res: Response) => {
                     SELECT 
                       JSON_AGG(
                         JSON_BUILD_OBJECT(
-                          'answer_option_id', ao.id, 
+                          'id', ao.id, 
                           'answer_text', ao.answer_text, 
                           'is_correct', ao.is_correct
                         )
@@ -79,11 +79,11 @@ router.post("/", async (req: Request, res: Response) => {
     const newExam: Exam = req.body;
 
     const insertExamQuery = `
-      INSERT INTO exam (name)
-      VALUES ($1)
+      INSERT INTO exam (name, questions)
+      VALUES ($1, $2)
       RETURNING *`;
 
-    const insertedExam = await db.query(insertExamQuery, [newExam.name]);
+    const insertedExam = await db.query(insertExamQuery, [newExam.name, newExam.questions]);
     res
       .status(200)
       .json({

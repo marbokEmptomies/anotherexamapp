@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ExamCard from './ExamCard';
-import { fetchExams, postExam } from '../features/exams/examsSlice';
+import { fetchExams, postExam, selectExams } from '../features/exams/examsSlice';
 import { AppState, useAppDispatch } from '../store/store';
 import { Exam } from '../server/types/types';
 import { Button } from '@mui/material';
@@ -25,12 +25,11 @@ function ExamCollection() {
     setCreatingExam(true);
     try {
       let newExam: Exam = {
-        exam_id: 0,
+        id: 0,
         name: 'Uusi tentti',
         questions: [],
       };
       await dispatch(postExam(newExam));
-      await dispatch(fetchExams());
     } catch (error) {
       console.error('Error creating an exam: ', error);
     } finally {
@@ -53,7 +52,7 @@ function ExamCollection() {
           {status === 'failed' && <p>Virhe: {error}</p>}
           {status === 'succeeded' &&
             exams.map((exam: Exam) => (
-              <ExamCard key={exam.exam_id} exam={exam} />
+              <ExamCard key={exam.id} exam={exam} />
             ))}
         </div>
       )}

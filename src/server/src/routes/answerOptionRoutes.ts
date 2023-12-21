@@ -16,9 +16,9 @@ router.post("/", async (req: Request, res: Response) => {
         }
         
         //insert the question into the "question" table
-        await db.query(`INSERT INTO answer_option (question_id, answer_text, is_correct) VALUES ($1, $2, $3)`, [questionId, answerOptionText, isCorrect]);
+        const data = await db.query(`INSERT INTO answer_option (question_id, answer_text, is_correct) VALUES ($1, $2, $3) RETURNING *`, [questionId, answerOptionText, isCorrect]);
 
-        res.status(200).json({message: "Answer option added successfully"})
+        res.status(200).json({message: "Answer option added successfully", data:data.rows[0]})
     } catch (error) {
         console.error("Error creating answer option: ", error);
         res.status(500).json({ error: "Internal server error." });
@@ -39,9 +39,9 @@ router.put("/:id", async (req: Request, res: Response) => {
         };
 
         //update the question in the "question" table
-        await db.query(`UPDATE answer_option SET question_id = $1, answer_text = $2, is_correct = $3 WHERE id = $4`, [questionId, answerOptionText, isCorrect, answerOptionId]);
+        const data = await db.query(`UPDATE answer_option SET question_id = $1, answer_text = $2, is_correct = $3 WHERE id = $4 RETURNING *`, [questionId, answerOptionText, isCorrect, answerOptionId]);
 
-        res.status(200).json({message: "Answer option updated successfully!"});
+        res.status(200).json({message: "Answer option updated successfully!", data: data.rows[0]});
     } catch (error) {
         console.error("Error updating an answer option: ", error);
         res.status(500).json({ error: "Internal server error." });

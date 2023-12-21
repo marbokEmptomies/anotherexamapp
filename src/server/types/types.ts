@@ -11,7 +11,7 @@ export interface ExamState {
 }
 
 export interface Exam {
-    exam_id: number,
+    id: number,
     name: string,   
     questions: Question[],
 }
@@ -24,6 +24,7 @@ export interface Question {
 }
 
 export interface AnswerOption {
+    question_id: number,
     id: number,
     answer_text: string,
     is_correct: boolean,

@@ -7,9 +7,10 @@ const api = axios.create({
     baseURL: API_BASE_URL
 })
 
-export const createQuestion = async ({ examId, questionText }: { examId: number; questionText: string }): Promise<Question> => {
+export const createQuestion = async (newQuestion: Question): Promise<Question> => {
+    console.log("newQuestion: ", newQuestion)
     try {
-        const response = await api.post(`/questions`, {examId, questionText});
+        const response = await api.post(`/questions`, newQuestion);
         console.log("QuestionCreation response: ", response.data.data)
         return response.data.data;
     } catch (error) {

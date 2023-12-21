@@ -21,7 +21,7 @@ export const getAllExams = async () => {
 export const createExam = async (newExam: Exam): Promise<Exam> => {
     try {
         const response = await api.post('/exams', newExam);
-        return response.data;
+        return response.data.data;
     } catch (error) {
         console.error("Error creating exam: ", error);
         throw error;
@@ -30,7 +30,7 @@ export const createExam = async (newExam: Exam): Promise<Exam> => {
 
 export const updateExam = async (updatedExam: Exam): Promise<Exam> => {
     try {
-        const response = await api.put(`/exams/${updatedExam.exam_id}`, updatedExam);
+        const response = await api.put(`/exams/${updatedExam.id}`, updatedExam);
         return response.data;
     } catch (error) {
         console.error("Error updating exam", error);
@@ -39,6 +39,7 @@ export const updateExam = async (updatedExam: Exam): Promise<Exam> => {
 }
 
 export const deleteExam = async (examId: number): Promise<number> => {
+    console.log("DEL Exam id: ", examId)
     try {
         const response = await api.delete(`/exams/${examId}`)
         return response.data
