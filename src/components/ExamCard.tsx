@@ -30,11 +30,12 @@ interface AnswerOptionProps {
 
 const AnswerOptionComponent: React.FC<AnswerOptionProps> = ({ answerOption, onUpdateAnswerOption, onDeleteAnswerOption }) => {
     const [answerOptionText, setAnswerOptionText] = useState(answerOption.answer_text);
+    const [isCorrect, setIsCorrect] = useState(answerOption.is_correct)
     const [aoEditMode, setAoEditMode] = useState(false)
 
     const handleUpdateAnswerOption = () => {
-        onUpdateAnswerOption({ ...answerOption, answer_text: answerOptionText });
-        setAoEditMode(false); 
+        onUpdateAnswerOption({ ...answerOption, answer_text: answerOptionText, is_correct: isCorrect });
+        setAoEditMode(false);
     };
 
     return (
@@ -46,6 +47,14 @@ const AnswerOptionComponent: React.FC<AnswerOptionProps> = ({ answerOption, onUp
                         value={answerOptionText}
                         onChange={(e) => setAnswerOptionText(e.target.value)}
                     />
+                    <label>
+                        <p>Onko oikein? 
+                        <input
+                            type="checkbox"
+                            checked={isCorrect} 
+                            onChange={() => setIsCorrect(!isCorrect)}
+                        /></p>
+                    </label>
                     <Button color="inherit" onClick={handleUpdateAnswerOption}>
                         <SaveIcon />
                     </Button>
@@ -53,6 +62,10 @@ const AnswerOptionComponent: React.FC<AnswerOptionProps> = ({ answerOption, onUp
             ) : (
                 <>
                     <Typography>{answerOptionText}</Typography>
+                    <Typography>
+                        Oikein:
+                        <input type="checkbox" checked={isCorrect} disabled/>
+                    </Typography>
                     <Button color="inherit" onClick={() => setAoEditMode(true)}>
                         <ModeEditIcon />
                     </Button>
