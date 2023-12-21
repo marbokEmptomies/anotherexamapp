@@ -28,7 +28,7 @@ router.post("/", async (req: Request, res: Response) => {
 router.put("/:id", async (req: Request, res: Response) => {
     try {
         const answerOptionId = req.params.id;
-        const {questionId, answerOptionText, isCorrect} = req.body;
+        const {answerOptionText, isCorrect, question_id} = req.body;
         
         //check if the answer option exists
         const optionResult = await db.query(`SELECT * FROM answer_option WHERE id = $1`, [answerOptionId]);
@@ -39,7 +39,7 @@ router.put("/:id", async (req: Request, res: Response) => {
         };
 
         //update the question in the "question" table
-        const data = await db.query(`UPDATE answer_option SET question_id = $1, answer_text = $2, is_correct = $3 WHERE id = $4 RETURNING *`, [questionId, answerOptionText, isCorrect, answerOptionId]);
+        const data = await db.query(`UPDATE answer_option SET answer_text = $1, is_correct = $2, question_id = $3 WHERE id = $4 RETURNING *`, [answerOptionText, isCorrect, question_id, answerOptionId]);
 
         res.status(200).json({message: "Answer option updated successfully!", data: data.rows[0]});
     } catch (error) {

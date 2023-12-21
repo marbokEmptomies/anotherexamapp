@@ -19,15 +19,12 @@ export const createAnswerOption = async ({ questionId, answerOptionText, isCorre
 }
 
 export const updateAnswerOption = async (updatedAnswerOption: AnswerOption): Promise<AnswerOption> => {
-    const updateData = {
-        answer_text: updatedAnswerOption.answer_text,
-        is_correct: updatedAnswerOption.is_correct,
-    }
-    console.log("UD_AO", updateData)
+        
+    console.log("UD_AO", updatedAnswerOption)
     try {
-        const response = await api.put(`/answers/${updatedAnswerOption.id}`, {updateData});
-        console.log("UD_AO res: ", response)
-        return response.data;
+        const response = await api.put(`/answers/${updatedAnswerOption.id}`, {answerOptionText: updatedAnswerOption.answer_text, isCorrect: updatedAnswerOption.is_correct, question_id: updatedAnswerOption.question_id});
+        console.log("UD_AO res: ", response.data.data)
+        return response.data.data;
     } catch (error) {
         console.error("Error updating answer option", error);
         throw error;     

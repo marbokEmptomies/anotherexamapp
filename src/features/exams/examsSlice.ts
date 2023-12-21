@@ -113,7 +113,7 @@ export const createAnswerOption = createAsyncThunk(
 export const updateAnswerOption = createAsyncThunk(
   "/options/updateAnswerOption",
   async (updatedAnswerOption: AnswerOption) => {
-    console.log("updatedQuestion thunk: ", updatedAnswerOption);
+    console.log("updatedAnswerOption: ", updatedAnswerOption);
     await updateAnswerOptionApi(updatedAnswerOption);
     return updatedAnswerOption;
   }
@@ -362,8 +362,22 @@ const examsSlice = createSlice({
         state.error = action.error.message || null;
       })
       .addCase(updateAnswerOption.fulfilled, (state, action) => {
-        console.log("UD_AO: ", action.payload)
-        //TODO
+        console.log("UD_AO reducer: ", action.payload)
+        for(const exam of state.exams){
+          const question = exam.questions
+          const existingQuestion = question.find((ao) => ao.id === action.payload.question_id)
+          console.log(existingQuestion)
+          if(existingQuestion){
+            for(const q of exam.questions){
+              const ao = q.answer_options
+              const existingAo = ao.find((option) => option.id === action.payload.id)
+              if(existingAo){
+                Object.assign(existingAo, action.payload)
+              }
+            }
+          }
+        }
+
         state.status = "succeeded";
       })
       .addCase(updateAnswerOption.pending, (state) => {

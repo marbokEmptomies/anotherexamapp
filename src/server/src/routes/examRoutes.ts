@@ -8,7 +8,7 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const data = await db.query(
       `SELECT 
-      e.id AS exam_id, 
+      e.id AS id, 
       e.name, 
       COALESCE(
         (
